@@ -76,7 +76,7 @@ export default class SimpleSlider extends React.Component {
                     }
                   },
                   {
-                    breakpoint: 600,
+                    breakpoint: 800,
                     settings: {
                       slidesToShow: 1
                     }
