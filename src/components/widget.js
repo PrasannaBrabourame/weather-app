@@ -10,7 +10,9 @@ export default  class Widget extends Component {
 
   render() {
      console.log(this.props)
+     
     return (
+
       <div>
         <div className="widget">
                   <div className="widget__inner">
@@ -22,6 +24,7 @@ export default  class Widget extends Component {
                   <div className="widget__inner">
                      <p className="temp">30°</p>
                      <p className="temp-range">23..30°</p>
+                     <p className="TimePeriod">{}</p>
                   </div>
                   <div className="widget__inner">
                      <p title="humidity">

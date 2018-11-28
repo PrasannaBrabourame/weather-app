@@ -5,7 +5,7 @@ import axios from 'axios';
 export default class SimpleSlider extends React.Component {
     constructor(props){
         super(props);
-        this.state = {API:[]};
+        this.state = {API:[],Hourly:[]};
         this.GenerateBox = this.GenerateBox.bind(this);
     }
 
@@ -53,10 +53,63 @@ export default class SimpleSlider extends React.Component {
       )
     }
 
+    GenerateHourly(data, index){
+      return (
+         <div key={index}>
+               <div className="widget">
+                     <div className="widget__inner">
+                        <span className="icon">
+                        <i className={`wi wi-owm-night-${data.weather[0].id}`}></i>
+                        </span>
+                        <p className="status">{data.weather[0].description}</p>
+                     </div>
+                  <div className="widget__inner">
+                     <p className="temp">{data.main.temp}°</p>
+                     <p className="temp-range">{data.main.temp_min}-{data.main.temp_max}°</p>
+                       <p className="TimePeriod">{data.dt_txt.split(' ')[1]}</p>
+                  </div>
+                  <div className="widget__inner">
+                     <p title="humidity">
+                        <span className="icon">
+                        <i className="wi wi-raindrop"></i>
+                        </span>{data.main.humidity}
+                        <span>%</span>
+                     </p>
+                     <p title="wind and speed direction">
+                        <span className="icon">
+                        <i className="wi wi-direction-up-right"></i>
+                        </span>{data.wind.speed}
+                        <span> m/s</span>
+                     </p>
+                     <p title="pressure">
+                        <span className="icon">
+                        <i className="wi wi-thermometer"></i>
+                        </span>{Math.abs(data.main.pressure)}
+                     </p>
+                     <p title="cloudiness">
+                        <span className="icon">
+                        <i className="wi wi-cloud"></i>
+                        </span>{data.clouds.all}
+                        <span>%</span>
+                     </p>
+                     </div>
+               </div>
+         </div>
+      )
+    }
+
     componentDidMount(){
         axios.get('http://api.openweathermap.org/data/2.5/forecast/daily?q=Chennai,IN&units=metric&mode=JSON&appid=77e577e4c9e13e85b8e39f71194aea31')
         .then((response) => {
            this.setState({API:response.data.list})
+           console.log(response.data);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+        axios.get('http://api.openweathermap.org/data/2.5/forecast?q=Chennai,IN&units=metric&mode=JSON&appid=77e577e4c9e13e85b8e39f71194aea31')
+        .then((response) => {
+           this.setState({Hourly:response.data.list})
            console.log(response.data);
         })
         .catch(function (error) {
@@ -90,9 +143,15 @@ export default class SimpleSlider extends React.Component {
                 ]
             };
         return (
-            <Slider {...settings}>
-                  {this.state.API.map((data, i) => this.GenerateBox(data, i))}
-            </Slider>
+           <div>
+               <Slider {...settings}>
+                     {this.state.Hourly.map((data, i) => this.GenerateHourly(data, i))}
+               </Slider>
+               <br/>
+               <Slider {...settings}>
+                     {this.state.API.map((data, i) => this.GenerateBox(data, i))}
+               </Slider>
+           </div>
         );
   }
 }
