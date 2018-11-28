@@ -6,13 +6,25 @@ export default class Main extends Component {
         super(props);
         this.state = {
             _state:'Chennai',
-            _country:'IN'
+            _country:'IN',
+            showWeather:false
         }
         this.handleButton = this.handleButton.bind(this);
+        this.handleChangeText = this.handleChangeText.bind(this);
+    }
+
+
+    handleChangeText(e){
+        this.setState({showWeather:false});
+        if(e.target.name === 'State'){
+            this.setState({_state:e.target.value})
+        }else{
+            this.setState({_country:e.target.value})
+        }
     }
 
     handleButton(){
-
+        this.setState({showWeather:true});
     }
     render() {
       return (
@@ -26,22 +38,22 @@ export default class Main extends Component {
                 <div className="form-row">
                   <div className="app-col-6 form-left">
                       <label>State</label>
-                      <input type="text" required name="State" onChange={(e)=>this.handleChangeText(e)} value={this.state._state} disabled/>
+                      <input type="text" name="State" onChange={(e)=>this.handleChangeText(e)} value={this.state._state} />
                   </div>
                   <div className="app-col-6">
                   <label>Country</label>
-                      <input type="text" required name="amount" onChange={(e)=>this.handleChangeText(e)} value={this.state._country} disabled/>
+                      <input type="text" name="Country" onChange={(e)=>this.handleChangeText(e)} value={this.state._country} />
                   </div>
                 </div>
                 <div className="clear"></div>
               </div>
               <div className="form-row text-center">
-                  <button className="submit-btn" onClick={(e)=>this.handleButton(e)} disabled>
+                  <button className="submit-btn" onClick={(e)=>this.handleButton(e)} >
                       Get Weather
                   </button>
               </div>
               <div className="line"></div>
-              <SimpleSlider/>
+              {this.state.showWeather?<SimpleSlider stateValue={this.state}/>:''}
         </div>
         </div>
     )

@@ -5,7 +5,7 @@ import axios from 'axios';
 export default class SimpleSlider extends React.Component {
     constructor(props){
         super(props);
-        this.state = {API:[],Hourly:[]};
+        this.state = {API:[],Hourly:[],error:false};
         this.GenerateBox = this.GenerateBox.bind(this);
     }
 
@@ -99,21 +99,22 @@ export default class SimpleSlider extends React.Component {
     }
 
     componentDidMount(){
-        axios.get('http://api.openweathermap.org/data/2.5/forecast/daily?q=Chennai,IN&units=metric&mode=JSON&appid=77e577e4c9e13e85b8e39f71194aea31')
+        axios.get(`http://api.openweathermap.org/data/2.5/forecast/daily?q=${this.props.stateValue._state},${this.props.stateValue._country}&units=metric&mode=JSON&appid=77e577e4c9e13e85b8e39f71194aea31`)
         .then((response) => {
+           this.setState({error:false});
            this.setState({API:response.data.list})
-           console.log(response.data);
         })
-        .catch(function (error) {
+        .catch((error) =>{
+             this.setState({error:true});
             console.log(error);
         });
-        axios.get('http://api.openweathermap.org/data/2.5/forecast?q=Chennai,IN&units=metric&mode=JSON&appid=77e577e4c9e13e85b8e39f71194aea31')
+        axios.get(`http://api.openweathermap.org/data/2.5/forecast?q=${this.props.stateValue._state},${this.props.stateValue._country}&units=metric&mode=JSON&appid=77e577e4c9e13e85b8e39f71194aea31`)
         .then((response) => {
+            this.setState({error:false});
            this.setState({Hourly:response.data.list})
-           console.log(response.data);
         })
-        .catch(function (error) {
-            console.log(error);
+        .catch((error) => {
+            this.setState({error:true});
         });
         
     }
@@ -142,16 +143,22 @@ export default class SimpleSlider extends React.Component {
                   }
                 ]
             };
-        return (
-           <div>
-               <Slider {...settings}>
-                     {this.state.Hourly.map((data, i) => this.GenerateHourly(data, i))}
-               </Slider>
-               <br/>
-               <Slider {...settings}>
-                     {this.state.API.map((data, i) => this.GenerateBox(data, i))}
-               </Slider>
-           </div>
-        );
+
+            if(this.state.error){
+               return (<div>Invalid Details</div>)
+
+            }else{
+               return (
+                  <div>
+                      <Slider {...settings}>
+                            {this.state.Hourly.map((data, i) => this.GenerateHourly(data, i))}
+                      </Slider>
+                      <br/>
+                      <Slider {...settings}>
+                            {this.state.API.map((data, i) => this.GenerateBox(data, i))}
+                      </Slider>
+                  </div>
+               );
+            }
   }
 }
